@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using UnityEngine.WSA;
 
 public class Player : MonoBehaviour
 {
@@ -22,6 +23,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     Color hotWaterColor;
     #endregion
+
+    [SerializeField]
+    GameObject ice;
+    [SerializeField]
+    GameObject fire;
+    [SerializeField]
+    GameObject hotWater;
+
 
     [SerializeField]
     Tilemap elementTileMap;
@@ -163,11 +172,12 @@ public class Player : MonoBehaviour
         lineRenderer.material.SetColor("_Color", c);
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        Vector3 targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        lineRenderer.SetPosition(1, targetPos);
         lineRenderer.widthMultiplier = lineThickness;
         lineRenderer.enabled = true;
         isAttacking = true;
-        StartCoroutine(WaitAttack(attackType));
+        StartCoroutine(WaitAttack(attackType, targetPos));
     }
 
     private void AttackUpdate()
@@ -178,11 +188,28 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator WaitAttack(ElementTypes element)
+    IEnumerator WaitAttack(ElementTypes element, Vector3 pos)
     {
         yield return new WaitForSeconds(1);
         lineRenderer.enabled = false;
         isAttacking = false;
+        
+        Vector3 intPos = new Vector3(Mathf.FloorToInt(pos.x)+0.5f, Mathf.FloorToInt(pos.y)+0.5f, 0);
+        //TileData tileData;
+        //TileBase.GetTileData(intPos, elementTileMap, ref tileData);
+        if (element == ElementTypes.ICE)
+        {
+            Instantiate(ice, intPos, Quaternion.identity);
+        }
+        else if (element == ElementTypes.FIRE)
+        {
+            Instantiate(fire, intPos, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(hotWater, intPos, Quaternion.identity);
+        }
+        //elementTileMap.GetTile(new Vector3Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), 0));
     }
 
     private void Movement()
