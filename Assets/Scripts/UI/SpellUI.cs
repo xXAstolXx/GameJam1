@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class SpellUI : MonoBehaviour
 {
     #region Singleton
-    private static SpellUI instance = null;
+    private static SpellUI instance;
     Dictionary<ElementTypes, Sprite> elementToImage;
 
     [SerializeField]
@@ -26,16 +26,12 @@ public class SpellUI : MonoBehaviour
 
     private void Awake()
     {
+        instance = GetComponent<SpellUI>();
         elementToImage = new Dictionary<ElementTypes, Sprite>();
         elementToImage.Add(ElementTypes.ICE, iceSprite);
         elementToImage.Add(ElementTypes.FIRE, fireSprite);
         elementToImage.Add(ElementTypes.HOTWATER, hotWaterSprite);
         elementToImage.Add(ElementTypes.NONE, noSprite);
-    }
-
-    private SpellUI()
-    {
-
     }
 
     public static SpellUI Instance
@@ -44,32 +40,55 @@ public class SpellUI : MonoBehaviour
         {
             if(instance == null)
             {
-                instance = new SpellUI();
+                //instance = this;
             }
             return instance;
         }
     }
     #endregion
 
-    public void UpdateState(Dictionary<ElementTypes, bool> inputs)
+    public void UpdateState(List<SpellUIId> inputs)
     {
         Sprite sprite;
-        foreach (var input in inputs)
+
+        elementToImage.TryGetValue(inputs[0].element, out sprite);
+        if (inputs[0].isActive)
         {
-            elementToImage.TryGetValue(input.Key, out sprite);
-            if (input.Value)
-            {
-                var color = firstSpell.color.a;
-                color = 1f;
-            }
-            else
-            {
-                var color = firstSpell.color.a;
-                color = 0.5f;
-            }
-            
-            firstSpell.sprite = sprite;
+            var color = firstSpell.color.a;
+            color = 1f;
         }
+        else
+        {
+            var color = firstSpell.color.a;
+            color = 0.5f;
+        }
+        firstSpell.sprite = sprite;
+
+        elementToImage.TryGetValue(inputs[1].element, out sprite);
+        if (inputs[1].isActive)
+        {
+            var color = secondSpell.color.a;
+            color = 1f;
+        }
+        else
+        {
+            var color = secondSpell.color.a;
+            color = 0.5f;
+        }
+        secondSpell.sprite = sprite;
+
+        elementToImage.TryGetValue(inputs[2].element, out sprite);
+        if (inputs[2].isActive)
+        {
+            var color = combinedSpell.color.a;
+            color = 1f;
+        }
+        else
+        {
+            var color = combinedSpell.color.a;
+            color = 0.5f;
+        }
+        combinedSpell.sprite = sprite;
     }
 
 }

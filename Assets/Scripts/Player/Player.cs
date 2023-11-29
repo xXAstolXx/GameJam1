@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -27,17 +28,24 @@ public class Player : MonoBehaviour
     int collisionCount = 0;
     Vector2 collisionNormal;
 
-    int activeSpell;
-    ElementTypes[] spells;
+    public int activeSpell;
+    public ElementTypes[] spells;
 
-
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spells = new ElementTypes[2];
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.widthMultiplier = thickness;
         lineRenderer.enabled = false;
+        spells[0] = ElementTypes.NONE;
+        spells[1] = ElementTypes.NONE;
+    }
+
+
+    private void Start()
+    {
+
     }
 
     void FixedUpdate()
@@ -51,16 +59,16 @@ public class Player : MonoBehaviour
         {
             Bounce();
         }
-
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            
             activeSpell = 0;
         }
-        else if (Input.GetKeyDown(KeyCode.F2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             activeSpell = 1;
         }
-        else if (Input.GetKeyDown(KeyCode.F3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             activeSpell = 2;
         }
@@ -69,6 +77,8 @@ public class Player : MonoBehaviour
         {
             TryAttack();
         }
+
+        UpdateSpellUI();
     }
 
     private void TryAttack()
@@ -81,7 +91,6 @@ public class Player : MonoBehaviour
             }
             spells[0] = spells[1];
             spells[1] = ElementTypes.NONE;
-            UpdateSpellUI();
         }
         else if (activeSpell == 1)
         {
@@ -89,7 +98,6 @@ public class Player : MonoBehaviour
             {
                 Attack(spells[1]);
                 spells[1] = ElementTypes.NONE;
-                UpdateSpellUI();
             }
 
         }
@@ -123,28 +131,29 @@ public class Player : MonoBehaviour
         rb.transform.Translate(collisionNormal * movementSpeed * Time.deltaTime);
     }
 
-    void ColliderBounce()
-    {
-
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if ( collision.gameObject.layer != LayerMask.NameToLayer("ElementTile"))
+        if ( collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             collisionCount++;
             collisionNormal = collision.contacts[collisionCount-1].normal;
         }
-        else
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Magic Sphere"))
         {
-            OnMagicSphereCollide(collision.gameObject.GetComponent<MagicSphere>());
-            Destroy(collision.gameObject);
+            OnMagicSphereEnter(collision);
         }
     }
 
+    public void OnMagicSphereEnter(Collision2D collision)
+    {
+        OnMagicSphereCollide(collision.gameObject.GetComponent<MagicSphere>());
+        Destroy(collision.gameObject);
+    }
+
+
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.layer != LayerMask.NameToLayer("ElementTile"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             collisionCount--;
         }
@@ -166,14 +175,14 @@ public class Player : MonoBehaviour
         }
     }
     
-    private Dictionary<ElementTypes, bool> UpdateSpellUI()
+    private void UpdateSpellUI()
     {
-        Dictionary<ElementTypes, bool> result = new Dictionary<ElementTypes, bool>();
-        result.Add(spells[0], activeSpell == 0);
-        result.Add(spells[1], activeSpell == 1);
-        result.Add(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[1] != spells[2] ? 
-                   ElementTypes.HOTWATER : ElementTypes.NONE, activeSpell == 2);
-        return result;
+        List<SpellUIId> result = new List<SpellUIId>();
+        result.Add(new SpellUIId(spells[0], activeSpell == 0));
+        result.Add(new SpellUIId(spells[1], activeSpell == 1));
+        result.Add(new SpellUIId(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[0] != spells[1] ? 
+                   ElementTypes.HOTWATER : ElementTypes.NONE, activeSpell == 2));
+        SpellUI.Instance.UpdateState(result);
     }
 
 }
