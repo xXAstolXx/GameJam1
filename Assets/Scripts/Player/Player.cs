@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -21,6 +22,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     Color hotWaterColor;
     #endregion
+
+    [SerializeField]
+    Tilemap elementTileMap;
 
     private Rigidbody2D rb;
     private LineRenderer lineRenderer;
@@ -123,14 +127,38 @@ public class Player : MonoBehaviour
 
     private void Attack(ElementTypes element)
     {
+        ElementTypes attackType = ElementTypes.ICE;
         Color c = hotWaterColor;
         if (activeSpell == 0)
         {
-            c = spells[0] == ElementTypes.ICE ? iceColor : fireColor;
+            if (spells[0] == ElementTypes.ICE)
+            {
+                c = iceColor;
+                attackType = ElementTypes.ICE;
+            }
+            else
+            {
+                c = fireColor;
+                attackType = ElementTypes.FIRE;
+            }          
         }
         else if ( activeSpell == 1)
         {
-            c = spells[1] == ElementTypes.ICE ? iceColor : fireColor;
+            if (spells[0] == ElementTypes.ICE)
+            {
+                c = iceColor;
+                attackType = ElementTypes.ICE;
+            }
+            else
+            {
+                c = fireColor;
+                attackType = ElementTypes.FIRE;
+            }
+        }
+        else if (activeSpell == 2)
+        {
+            c = hotWaterColor;
+            attackType = ElementTypes.HOTWATER;
         }
         lineRenderer.material.SetColor("_Color", c);
         lineRenderer.positionCount = 2;
@@ -139,7 +167,7 @@ public class Player : MonoBehaviour
         lineRenderer.widthMultiplier = lineThickness;
         lineRenderer.enabled = true;
         isAttacking = true;
-        StartCoroutine(WaitAttack());
+        StartCoroutine(WaitAttack(attackType));
     }
 
     private void AttackUpdate()
@@ -150,7 +178,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator WaitAttack()
+    IEnumerator WaitAttack(ElementTypes element)
     {
         yield return new WaitForSeconds(1);
         lineRenderer.enabled = false;
