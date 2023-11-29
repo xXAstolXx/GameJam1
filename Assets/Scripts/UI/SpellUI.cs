@@ -51,13 +51,13 @@ public class SpellUI : MonoBehaviour
     }
     #endregion
 
-    public void UpdateState(Dictionary<ElementTypes, bool> inputs)
+    public void UpdateState(List<SpellUIId> inputs)
     {
         Sprite sprite;
         foreach (var input in inputs)
         {
-            elementToImage.TryGetValue(input.Key, out sprite);
-            if (input.Value)
+            elementToImage.TryGetValue(input.element, out sprite);
+            if (input.isActive)
             {
                 var color = firstSpell.color.a;
                 color = 1f;

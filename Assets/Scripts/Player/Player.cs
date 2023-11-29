@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -30,14 +31,21 @@ public class Player : MonoBehaviour
     int activeSpell;
     ElementTypes[] spells;
 
-
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spells = new ElementTypes[2];
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.widthMultiplier = thickness;
         lineRenderer.enabled = false;
+        spells[0] = ElementTypes.NONE;
+        spells[1] = ElementTypes.NONE;
+    }
+
+
+    private void Start()
+    {
+
     }
 
     void FixedUpdate()
@@ -130,21 +138,31 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if ( collision.gameObject.layer != LayerMask.NameToLayer("ElementTile"))
+        Debug.Log("contact!");
+        Debug.Log(collision.gameObject);
+        if ( collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
+            Debug.Log("wrong collide");
             collisionCount++;
             collisionNormal = collision.contacts[collisionCount-1].normal;
         }
-        else
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Magic Sphere"))
         {
-            OnMagicSphereCollide(collision.gameObject.GetComponent<MagicSphere>());
-            Destroy(collision.gameObject);
+            OnMagicSphereEnter(collision);
         }
     }
 
+    public void OnMagicSphereEnter(Collision2D collision)
+    {
+        Debug.Log("sphere collide");
+        OnMagicSphereCollide(collision.gameObject.GetComponent<MagicSphere>());
+        Destroy(collision.gameObject);
+    }
+
+
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.layer != LayerMask.NameToLayer("ElementTile"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             collisionCount--;
         }
@@ -166,13 +184,13 @@ public class Player : MonoBehaviour
         }
     }
     
-    private Dictionary<ElementTypes, bool> UpdateSpellUI()
+    private List<SpellUIId> UpdateSpellUI()
     {
-        Dictionary<ElementTypes, bool> result = new Dictionary<ElementTypes, bool>();
-        result.Add(spells[0], activeSpell == 0);
-        result.Add(spells[1], activeSpell == 1);
-        result.Add(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[1] != spells[2] ? 
-                   ElementTypes.HOTWATER : ElementTypes.NONE, activeSpell == 2);
+        List<SpellUIId> result = new List<SpellUIId>();
+        result.Add(new SpellUIId(spells[0], activeSpell == 0));
+        result.Add(new SpellUIId(spells[1], activeSpell == 1));
+        result.Add(new SpellUIId(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[1] != spells[2] ? 
+                   ElementTypes.HOTWATER : ElementTypes.NONE, activeSpell == 2));
         return result;
     }
 
