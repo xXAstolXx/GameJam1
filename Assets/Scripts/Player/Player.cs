@@ -28,8 +28,8 @@ public class Player : MonoBehaviour
     int collisionCount = 0;
     Vector2 collisionNormal;
 
-    int activeSpell;
-    ElementTypes[] spells;
+    public int activeSpell;
+    public ElementTypes[] spells;
 
     private void Awake()
     {
@@ -59,16 +59,16 @@ public class Player : MonoBehaviour
         {
             Bounce();
         }
-
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            
             activeSpell = 0;
         }
-        else if (Input.GetKeyDown(KeyCode.F2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             activeSpell = 1;
         }
-        else if (Input.GetKeyDown(KeyCode.F3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             activeSpell = 2;
         }
@@ -77,6 +77,8 @@ public class Player : MonoBehaviour
         {
             TryAttack();
         }
+
+        UpdateSpellUI();
     }
 
     private void TryAttack()
@@ -89,7 +91,6 @@ public class Player : MonoBehaviour
             }
             spells[0] = spells[1];
             spells[1] = ElementTypes.NONE;
-            UpdateSpellUI();
         }
         else if (activeSpell == 1)
         {
@@ -97,7 +98,6 @@ public class Player : MonoBehaviour
             {
                 Attack(spells[1]);
                 spells[1] = ElementTypes.NONE;
-                UpdateSpellUI();
             }
 
         }
@@ -131,18 +131,10 @@ public class Player : MonoBehaviour
         rb.transform.Translate(collisionNormal * movementSpeed * Time.deltaTime);
     }
 
-    void ColliderBounce()
-    {
-
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("contact!");
-        Debug.Log(collision.gameObject);
         if ( collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
-            Debug.Log("wrong collide");
             collisionCount++;
             collisionNormal = collision.contacts[collisionCount-1].normal;
         }
@@ -154,7 +146,6 @@ public class Player : MonoBehaviour
 
     public void OnMagicSphereEnter(Collision2D collision)
     {
-        Debug.Log("sphere collide");
         OnMagicSphereCollide(collision.gameObject.GetComponent<MagicSphere>());
         Destroy(collision.gameObject);
     }
@@ -184,14 +175,14 @@ public class Player : MonoBehaviour
         }
     }
     
-    private List<SpellUIId> UpdateSpellUI()
+    private void UpdateSpellUI()
     {
         List<SpellUIId> result = new List<SpellUIId>();
         result.Add(new SpellUIId(spells[0], activeSpell == 0));
         result.Add(new SpellUIId(spells[1], activeSpell == 1));
-        result.Add(new SpellUIId(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[1] != spells[2] ? 
+        result.Add(new SpellUIId(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[0] != spells[1] ? 
                    ElementTypes.HOTWATER : ElementTypes.NONE, activeSpell == 2));
-        return result;
+        SpellUI.Instance.UpdateState(result);
     }
 
 }
