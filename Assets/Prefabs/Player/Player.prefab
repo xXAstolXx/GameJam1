@@ -138,6 +138,8 @@ MonoBehaviour:
   iceColor: {r: 0, g: 0.69052994, b: 0.8301887, a: 0}
   fireColor: {r: 0.6132076, g: 0, b: 0, a: 0}
   hotWaterColor: {r: 0, g: 0.09999049, b: 0.764151, a: 0}
+  activeSpell: 0
+  spells: 
 --- !u!50 &7624120932059036641
 Rigidbody2D:
   serializedVersion: 4
@@ -331,7 +333,7 @@ Transform:
   m_GameObject: {fileID: 3530922327605255988}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.5612392, y: 0.67843133, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
