@@ -124,13 +124,16 @@ public class Player : MonoBehaviour
 
     private void UpdateGraphic()
     {
-        Vector2 veloc = rb.velocity;
-        if (veloc.magnitude == 0f)
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector2 movement = new Vector2(horizontalInput, verticalInput).normalized;
+
+        if (movement.magnitude == 0f)
         {
             return;
         }
-        veloc = rb.velocity.normalized;
-        float angle = Mathf.Rad2Deg * Mathf.Atan2(veloc.x,veloc.y);
+        float angle = Mathf.Rad2Deg * Mathf.Atan2(movement.x, movement.y);
         if (angle > 45 && angle < 135)
         {
             activeGraphic = 0;
@@ -147,6 +150,7 @@ public class Player : MonoBehaviour
         {
             activeGraphic = 3;
         }
+        Debug.Log(angle);
         for (int i = 0; i < 4; i++)
         {
             if (activeGraphic == i)
