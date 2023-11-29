@@ -210,6 +210,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3c4d04722067fd44afb93fca13a0a36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1839735485 &731450496 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 6832005350514780249, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+  m_PrefabInstance: {fileID: 1189870706443750190}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &961296115
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -279,6 +284,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 578379188}
     m_Modifications:
+    - target: {fileID: 913071735771257550, guid: 837a61d3574c6c045a37db1194688969, type: 3}
+      propertyPath: elementTileMap
+      value: 
+      objectReference: {fileID: 731450496}
     - target: {fileID: 2169730760820175944, guid: 837a61d3574c6c045a37db1194688969, type: 3}
       propertyPath: m_Name
       value: Player
