@@ -5,17 +5,26 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float speed;
 
+    [SerializeField]
+    private int MaxHealth;
+    private int currentHp;
+
     private Transform playerTransform;
 
     private Rigidbody2D rb;
 
-    private SightRange sightRange; 
+    private SightRange sightRange;
+
+    private Healthbar healthbar;
 
     private void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody2D>();
         sightRange = GetComponentInChildren<SightRange>();
+        healthbar = GetComponentInChildren<Healthbar>();
+        healthbar.SetMaxHealth(MaxHealth);
+
     }
 
     private void Update()
@@ -37,6 +46,11 @@ public class Enemy : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
         }
+    }
+
+    private void TakeDamage(int damage)
+    {
+
     }
     
 }
