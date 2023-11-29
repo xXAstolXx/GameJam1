@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2517014948653441694}
   - component: {fileID: 2911247080017059927}
   m_Layer: 3
-  m_Name: PlayerGraphic
+  m_Name: PlayerGraphicFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,6 +163,7 @@ MonoBehaviour:
   ice: {fileID: 3297494598563130033, guid: 8ac628df7d59eec428744816e1d6ec34, type: 3}
   fire: {fileID: 2302573175353332713, guid: 713a7d43744e2ec4ba8a2278632dca18, type: 3}
   hotWater: {fileID: 5531871873409282409, guid: df6f7286ec546464bb42a44c653e87b8, type: 3}
+  graphicObjects: []
   elementTileMap: {fileID: 0}
   activeSpell: 0
   spells: 
@@ -227,7 +228,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.6
 --- !u!120 &8661910797356199295
 LineRenderer:
   serializedVersion: 2

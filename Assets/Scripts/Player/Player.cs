@@ -31,9 +31,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     GameObject hotWater;
 
+    [SerializeField]
+    List<GameObject> graphicObjects;
+
+    int activeGraphic = 1;
+
 
     [SerializeField]
     Tilemap elementTileMap;
+    //List<>
 
     private Rigidbody2D rb;
     private LineRenderer lineRenderer;
@@ -54,6 +60,17 @@ public class Player : MonoBehaviour
         lineRenderer.enabled = false;
         spells[0] = ElementTypes.NONE;
         spells[1] = ElementTypes.NONE;
+        for (int i = 0; i < 4; i++) 
+        {
+            if (activeGraphic == i)
+            {
+                graphicObjects[i].SetActive(true);
+            }
+            else
+            {
+                graphicObjects[i].SetActive(false);
+            }
+        }
     }
 
 
@@ -101,7 +118,63 @@ public class Player : MonoBehaviour
 
         UpdateSpellUI();
         AttackUpdate();
+        UpdateGraphic();
     }
+
+    private void UpdateGraphic()
+    {
+        Vector2 veloc = rb.velocity;
+        if (veloc.magnitude == 0f)
+        {
+            return;
+        }
+        veloc = rb.velocity.normalized;
+        float angle = Mathf.Rad2Deg * Mathf.Atan2(veloc.x,veloc.y);
+        if (angle > 45 && angle < 135)
+        {
+            activeGraphic = 0;
+        }
+        else if (angle >= 135 && angle < 225)
+        {
+            activeGraphic = 1;
+        }
+        else if (angle >= 225 && angle < 315)
+        {
+            activeGraphic = 2;
+        }
+        else
+        {
+            activeGraphic = 3;
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            if (activeGraphic == i)
+            {
+                graphicObjects[i].SetActive(true);
+            }
+            else
+            {
+                graphicObjects[i].SetActive(false);
+            }
+        }
+        if (activeSpell == 0)
+        {
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", spells[0] == ElementTypes.FIRE);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", spells[0] == ElementTypes.ICE);
+        }
+        else if (activeSpell == 1)
+        {
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", spells[1] == ElementTypes.FIRE);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", spells[1] == ElementTypes.ICE);
+        }
+        else
+        {
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", false);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", false);
+        }
+    }
+        
+
 
     private void TryAttack()
     {
