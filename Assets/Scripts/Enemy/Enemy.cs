@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
     private float speed;
 
     [SerializeField]
-    private int MaxHealth;
+    private int MaxHealth = 10;
     private int currentHp;
 
     private Transform playerTransform;
@@ -50,7 +50,7 @@ public class Enemy : MonoBehaviour
 
     private void TakeDamage(int damage)
     {
-
+        healthbar.SetCurrentHealth(currentHp - damage);
     }
     
 }
