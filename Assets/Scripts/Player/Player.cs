@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float movementSpeed;
     [SerializeField]
-    private float thickness = 0.1f;
+    private float lineThickness = 0.1f;
     [SerializeField]
     Color iceColor;
     [SerializeField]
@@ -31,12 +31,13 @@ public class Player : MonoBehaviour
     public int activeSpell;
     public ElementTypes[] spells;
 
+    bool isAttacking = false;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spells = new ElementTypes[2];
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.widthMultiplier = thickness;
         lineRenderer.enabled = false;
         spells[0] = ElementTypes.NONE;
         spells[1] = ElementTypes.NONE;
@@ -59,18 +60,25 @@ public class Player : MonoBehaviour
         {
             Bounce();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE)
         {
-            
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+
+                activeSpell = 0;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                activeSpell = 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                activeSpell = 2;
+            }
+        }
+        else if(spells[1] == ElementTypes.NONE)
+        {
             activeSpell = 0;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            activeSpell = 1;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            activeSpell = 2;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -79,6 +87,7 @@ public class Player : MonoBehaviour
         }
 
         UpdateSpellUI();
+        AttackUpdate();
     }
 
     private void TryAttack()
@@ -106,14 +115,46 @@ public class Player : MonoBehaviour
             if (spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE)
             {
                 Attack(ElementTypes.HOTWATER);
+                spells[0] = ElementTypes.NONE;
+                spells[1] = ElementTypes.NONE;
             }
         }
     }
 
     private void Attack(ElementTypes element)
     {
-        //lineRenderer.startColor =
-        //return YieldInstruction;
+        Color c = hotWaterColor;
+        if (activeSpell == 0)
+        {
+            c = spells[0] == ElementTypes.ICE ? iceColor : fireColor;
+        }
+        else if ( activeSpell == 1)
+        {
+            c = spells[1] == ElementTypes.ICE ? iceColor : fireColor;
+        }
+        lineRenderer.material.SetColor("_Color", c);
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        lineRenderer.widthMultiplier = lineThickness;
+        lineRenderer.enabled = true;
+        isAttacking = true;
+        StartCoroutine(WaitAttack());
+    }
+
+    private void AttackUpdate()
+    {
+        if (isAttacking)
+        {
+            lineRenderer.SetPosition(0, transform.position);
+        }
+    }
+
+    IEnumerator WaitAttack()
+    {
+        yield return new WaitForSeconds(1);
+        lineRenderer.enabled = false;
+        isAttacking = false;
     }
 
     private void Movement()

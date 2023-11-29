@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
-  thickness: 0.1
+  lineThickness: 0.1
   iceColor: {r: 0, g: 0.69052994, b: 0.8301887, a: 0}
   fireColor: {r: 0.6132076, g: 0, b: 0, a: 0}
   hotWaterColor: {r: 0, g: 0.09999049, b: 0.764151, a: 0}
@@ -223,7 +223,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 15f3eccde81627446abd7b45c9624f6e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
