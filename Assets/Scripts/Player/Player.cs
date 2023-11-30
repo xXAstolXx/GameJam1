@@ -40,8 +40,7 @@ public class Player : MonoBehaviour
     Tilemap elementTileMap;
     List<GameObject> elementTiles;
 
-    [SerializeField]
-
+    
 
     private Rigidbody2D rb;
     private LineRenderer lineRenderer;
@@ -72,8 +71,7 @@ public class Player : MonoBehaviour
             {
                 graphicObjects[i].SetActive(false);
             }
-        }
-        
+        }     
     }
 
 
@@ -274,75 +272,9 @@ public class Player : MonoBehaviour
         lineRenderer.enabled = false;
         isAttacking = false;
         
-        Vector3 posReal = new Vector3(Mathf.FloorToInt(pos.x)+0.5f, Mathf.FloorToInt(pos.y)+0.5f, 0);
-        for (int i = 0; i < elementTileMap.transform.childCount; i++)
-        {
-            Transform t = elementTileMap.transform.GetChild(i);
-            if (t.position == posReal)
-            {
-                Debug.Log(t.gameObject.name);
-                //if (t.gameObject.GetComponent<FireTile>())
-                //{
-                //    if (element == ElementTypes.ICE)
-                //    {
-                //        Destroy(t.gameObject);
-                //        GameObject o = Instantiate(hotWater, posReal, Quaternion.identity);
-                //        o.transform.position = posReal;
-                //    }
-                //    if (element == ElementTypes.HOTWATER)
-                //    {
-                //        Destroy(t.gameObject);
-                //        GameObject o = Instantiate(hotWater, posReal, Quaternion.identity);
-                //        o.transform.position = posReal;
-                //    }
-                //}
-                //if (t.gameObject.GetComponent<IceTile>())
-                //{
-                //    if (element == ElementTypes.FIRE)
-                //    {
-                //        Destroy(t.gameObject);
-                //        GameObject o = Instantiate(hotWater, posReal, Quaternion.identity);
-                //        o.transform.position = posReal;
-                //    }
-                //    if (element == ElementTypes.HOTWATER)
-                //    {
-                //        Destroy(t.gameObject);
-                //        GameObject o = Instantiate(hotWater, posReal, Quaternion.identity);
-                //        o.transform.position = posReal;
-                //    }
-                //}
-                //if (t.gameObject.GetComponent<HotWaterTile>())
-                //{
-                //    if (element == ElementTypes.FIRE)
-                //    {
-                //        Destroy(t.gameObject);
-                //        GameObject o = Instantiate(hotWater, posReal, Quaternion.identity);
-                //        o.transform.position = posReal;
-                //    }
-                //    if (element == ElementTypes.ICE)
-                //    {
-                //        Destroy(t.gameObject);
-                //        GameObject o = Instantiate(ice, posReal, Quaternion.identity);
-                //        o.transform.position = posReal;
-                //    }
-                //}
-            }
-        }
-        //TileData tileData;
-        //TileBase.GetTileData(intPos, elementTileMap, ref tileData);
-        if (element == ElementTypes.ICE)
-        {
-            Instantiate(ice, posReal, Quaternion.identity);
-        }
-        else if (element == ElementTypes.FIRE)
-        {
-            Instantiate(fire, posReal, Quaternion.identity);
-        }
-        else
-        {
-            Instantiate(hotWater, posReal, Quaternion.identity);
-        }
-        //elementTileMap.GetTile(new Vector3Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), 0));
+        Vector3Int position = new Vector3Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), 0);
+        CustomGrid.Instance.AttackWith(position, element);
+        
     }
 
     private void Movement()
@@ -414,4 +346,8 @@ public class Player : MonoBehaviour
         SpellUI.Instance.UpdateState(result);
     }
 
+    private void AddElementTile(Vector2 position, ElementTypes element)
+    {
+
+    }
 }
