@@ -22,13 +22,17 @@ public class SpellUI : MonoBehaviour
     [SerializeField]
     private Image notActiveImage1;
     [SerializeField]
-    private Image secondSpell;
+    private GameObject secondSpell;
     [SerializeField]
     private Image notActiveImage2;
     [SerializeField]
     private Image combinedSpell;
     [SerializeField]
     private Image notActiveImage3;
+
+    private Outline firstSpellOutline;
+    private Outline secondSpellOutline;
+    private Outline combinedSpellOutline;
 
     private void Awake()
     {
@@ -38,6 +42,9 @@ public class SpellUI : MonoBehaviour
         elementToImage.Add(ElementTypes.FIRE, fireSprite);
         elementToImage.Add(ElementTypes.WATER, hotWaterSprite);
         elementToImage.Add(ElementTypes.NONE, noSprite);
+        firstSpellOutline = firstSpell.GetComponent<Outline>();
+        secondSpellOutline = secondSpell.GetComponent<Outline>();
+        combinedSpellOutline = combinedSpell.GetComponent<Outline>();
     }
 
     public static SpellUI Instance
@@ -57,8 +64,20 @@ public class SpellUI : MonoBehaviour
     {
         Sprite sprite;
         elementToImage.TryGetValue(inputs[0].element, out sprite);
+        if (!inputs[0].isActive && inputs[0].element != ElementTypes.NONE && inputs[0] != null)
+        {
+            notActiveImage1.enabled = false;
+
+        }
+        else
+        {
+            notActiveImage1.enabled = true;
+            firstSpellOutline.enabled = false;
+        }
         if (inputs[0].isActive)
         {
+            firstSpellOutline.enabled = true;
+            Debug.Log("Input 0 Active: " + inputs[0].isActive);
             if (inputs[0].element == ElementTypes.NONE)
             {
                 notActiveImage1.enabled = true;
@@ -67,12 +86,26 @@ public class SpellUI : MonoBehaviour
             {
                 notActiveImage1.enabled = false;
             }
+
         }
         firstSpell.sprite = sprite;
 
         elementToImage.TryGetValue(inputs[1].element, out sprite);
+        
+        if (!inputs[1].isActive && inputs[1].element != ElementTypes.NONE && inputs[1] != null)
+        {
+            notActiveImage2.enabled = false;
+            
+        }
+        else
+        {
+            notActiveImage2.enabled = true;
+            secondSpellOutline.enabled = false;
+        }
         if (inputs[1].isActive)
         {
+            secondSpellOutline.enabled = true;
+            Debug.Log("Input 1 Active: " + inputs[1].isActive);
             if (inputs[1].element == ElementTypes.NONE)
             {
                 notActiveImage2.enabled = true;
@@ -82,11 +115,23 @@ public class SpellUI : MonoBehaviour
                 notActiveImage2.enabled = false;
             }
         }
-        secondSpell.sprite = sprite;
+        secondSpell.GetComponent<Image>().sprite = sprite;
 
         elementToImage.TryGetValue(inputs[2].element, out sprite);
+        if (!inputs[2].isActive && inputs[2].element != ElementTypes.NONE && inputs[2] != null)
+        {
+            notActiveImage2.enabled = false;
+
+        }
+        else
+        {
+            notActiveImage2.enabled = true;
+            combinedSpellOutline.enabled = false;
+        }
         if (inputs[2].isActive)
         {
+            combinedSpellOutline.enabled = true;
+            Debug.Log("Input 2 Active: " +inputs[2].isActive);
             if (inputs[2].element == ElementTypes.NONE)
             {
                 notActiveImage3.enabled = true;
