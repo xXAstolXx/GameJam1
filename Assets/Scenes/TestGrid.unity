@@ -197,6 +197,7 @@ Transform:
   - {fileID: 357628572}
   - {fileID: 2137145014}
   - {fileID: 2082567985}
+  - {fileID: 1286089748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &578379189
@@ -359,6 +360,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f69205d62001a449ace0e400f51fed8, type: 3}
+--- !u!1 &1286089747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1286089748}
+  - component: {fileID: 1286089749}
+  m_Layer: 0
+  m_Name: ElementSettings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1286089748
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286089747}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 578379188}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1286089749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286089747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc4c86ae01f2184293cda6a93aa6063, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elements:
+  - {fileID: 11400000, guid: 41ef4088b6008384ebc5fd728ca229ec, type: 2}
+  - {fileID: 11400000, guid: 8d6bd3a53327d26499950998d753fda8, type: 2}
+  - {fileID: 11400000, guid: 2d6da22c9a3b60b4da19d2caabccd1a5, type: 2}
+  - {fileID: 11400000, guid: ba80f6b3a5952a44db63f896f1424b1d, type: 2}
 --- !u!1001 &1529539269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -709,6 +759,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grid
       objectReference: {fileID: 0}
+    - target: {fileID: 7120538477097414801, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: iceTile
+      value: 
+      objectReference: {fileID: 3297494598563130033, guid: 8ac628df7d59eec428744816e1d6ec34, type: 3}
+    - target: {fileID: 7120538477097414801, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: fireTile
+      value: 
+      objectReference: {fileID: 2302573175353332713, guid: 713a7d43744e2ec4ba8a2278632dca18, type: 3}
+    - target: {fileID: 7120538477097414801, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: steamTile
+      value: 
+      objectReference: {fileID: 3403416318270429338, guid: 706e04892c159514e809bb92ebfcb618, type: 3}
+    - target: {fileID: 7120538477097414801, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: waterTile
+      value: 
+      objectReference: {fileID: 5531871873409282409, guid: df6f7286ec546464bb42a44c653e87b8, type: 3}
+    - target: {fileID: 7120538477097414801, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: environment
+      value: 
+      objectReference: {fileID: 731450496}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

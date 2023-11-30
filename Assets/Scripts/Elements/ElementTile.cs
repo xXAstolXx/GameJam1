@@ -8,8 +8,6 @@ public class ElementTile : MonoBehaviour
     public ElementTypes element;
     protected BoxCollider2D collider;
     protected SpriteRenderer spriteRenderer;
-    public float damage;
-    public float speedModifier;
 
 
     private void Awake()
