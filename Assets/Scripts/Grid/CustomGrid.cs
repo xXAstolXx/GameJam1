@@ -58,15 +58,20 @@ public class CustomGrid : MonoBehaviour
 
     private void DeleteTile(Vector3Int position)
     {
+        Debug.Log("Delete tile at pos: " + position);
+        Vector3 realPos = new Vector3(position.x+0.5f, position.y+0.5f, 0);
         for (int i = 0; i < environment.transform.childCount; i++)
         {
             Transform t = environment.transform.GetChild(i);
-            if (position == t.transform.position)
+            if (realPos == t.transform.position)
             {
+                Debug.Log(t.gameObject.name);
                 Destroy(t.gameObject);
                 return;
             }
         }
+
+        elementsGrid.Remove(position);
     }
 
     private void AddTile(Vector3Int position, ElementTypes element)
@@ -88,6 +93,10 @@ public class CustomGrid : MonoBehaviour
         {
             Instantiate(waterTile, realPos, Quaternion.identity, environment.transform);
         }
+        if(!elementsGrid.ContainsKey(position))
+        {
+            elementsGrid.Add(position, element);
+        }
     }
 
     private void GetResultingElement()
@@ -97,20 +106,16 @@ public class CustomGrid : MonoBehaviour
 
     public void AttackWith(Vector3Int position, ElementTypes element)
     {
-        Debug.Log(elementsGrid);
         if (!elementsGrid.ContainsKey(position))
         {
-            elementsGrid.Add(position, element);
-
             AddTile(position, element);
         }
         else
         {
-            elementsGrid.Remove(position);
-            elementsGrid.Add(position, element);
-            DeleteTile(position);
             ElementTypes result;
             ElementSettings.Instance.transformElements.TryGetValue(new ElementTransform(element, GetElement(position)), out result);
+
+            DeleteTile(position);
             AddTile(position, result);
         }
     }

@@ -759,6 +759,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grid
       objectReference: {fileID: 0}
+    - target: {fileID: 6772627800795213754, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6772627800795213754, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1973581219
+      objectReference: {fileID: 0}
     - target: {fileID: 7120538477097414801, guid: d30544ac5ccffd54d8db13c95918971a, type: 3}
       propertyPath: iceTile
       value: 
