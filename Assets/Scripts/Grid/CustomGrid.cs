@@ -67,7 +67,6 @@ public class CustomGrid : MonoBehaviour
             {
                 Debug.Log(t.gameObject.name);
                 Destroy(t.gameObject);
-                return;
             }
         }
 
@@ -93,10 +92,7 @@ public class CustomGrid : MonoBehaviour
         {
             Instantiate(waterTile, realPos, Quaternion.identity, environment.transform);
         }
-        if(!elementsGrid.ContainsKey(position))
-        {
-            elementsGrid.Add(position, element);
-        }
+        elementsGrid.Add(position, element);
     }
 
     private void GetResultingElement()
@@ -112,9 +108,15 @@ public class CustomGrid : MonoBehaviour
         }
         else
         {
+            if(element == GetElement(position))
+            {
+                return;
+            }
             ElementTypes result;
             ElementSettings.Instance.transformElements.TryGetValue(new ElementTransform(element, GetElement(position)), out result);
-
+            Debug.Log(element);
+            Debug.Log(GetElement(position));
+            Debug.Log(result);
             DeleteTile(position);
             AddTile(position, result);
         }

@@ -130,7 +130,6 @@ public class SpellUI : MonoBehaviour
         if (inputs[2].isActive)
         {
             combinedSpellOutline.enabled = true;
-            Debug.Log("Input 2 Active: " +inputs[2].isActive);
             if (inputs[2].element == ElementTypes.NONE)
             {
                 notActiveImage3.enabled = true;
