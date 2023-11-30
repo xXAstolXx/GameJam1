@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     [Header("Movement" , order = 1)]
     [SerializeField]
     private float movementSpeed;
+    private float startSpeed;
+
     [SerializeField]
     private float lineThickness = 0.1f;
     [SerializeField]
@@ -53,12 +55,13 @@ public class Player : MonoBehaviour
     bool isAttacking = false;
 
     [SerializeField]
-    private int maxHp;
-    private int currentHP;
+    private float maxHp;
+    private float currentHP;
     private Healthbar healthbar;
 
     private void Awake()
     {
+        startSpeed = movementSpeed;
         rb = GetComponent<Rigidbody2D>();
         spells = new ElementTypes[2];
         lineRenderer = GetComponent<LineRenderer>();
@@ -125,19 +128,37 @@ public class Player : MonoBehaviour
         UpdateSpellUI();
         AttackUpdate();
         UpdateGraphic();
+        UpdatePos();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHP = currentHP - damage * Time.fixedDeltaTime;
+        if (currentHP < 0)
+        {
+            currentHP = maxHp;
+        }
+        healthbar.SetCurrentHealth(currentHP);
     }
 
     private void UpdatePos()
     {
-        Vector3Int position = new Vector3Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y),0);
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y-1f,0);
+        Vector3Int position = new Vector3Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y),0);
         ElementTypes element = CustomGrid.Instance.GetElement(position);
+        Debug.Log(element);
+        Element settings;
+        
         if (element == ElementTypes.NONE)
         {
-            return;
+            movementSpeed = startSpeed;
         }
         else
         {
+            settings = ElementSettings.Instance.GetElementSettings(element);
+            TakeDamage(settings.damage);
 
+            movementSpeed = settings.speedModifier * startSpeed;
         }
     }
 

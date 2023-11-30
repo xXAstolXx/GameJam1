@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: FireElement
   m_EditorClassIdentifier: 
   element: 1
-  damage: 2
-  speedModifier: 0
+  damage: 5
+  speedModifier: 1

@@ -47,8 +47,9 @@ public class CustomGrid : MonoBehaviour
     public ElementTypes GetElement(Vector3Int position)
     {
         ElementTypes result = ElementTypes.NONE;
-        elementsGrid.TryGetValue(position, out result);
-        return result;
+        if (elementsGrid.TryGetValue(position, out result)) { return result; }
+        else { return ElementTypes.NONE; }
+        
     }
 
     public void SetElement(Vector3Int position, ElementTypes element)

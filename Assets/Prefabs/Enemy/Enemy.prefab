@@ -67,7 +67,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 3.99
 --- !u!114 &3314524295661039288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,8 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46caf1b5dad45014b8be3e99443ce513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
-  MaxHealth: 0
+  movementSpeed: 2
+  maxHp: 20
+  damage: 3
 --- !u!50 &6488780346470112683
 Rigidbody2D:
   serializedVersion: 4
@@ -174,7 +175,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -266,7 +267,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1973581219
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0.2971698, b: 0.2971698, a: 1}
   m_FlipX: 0
