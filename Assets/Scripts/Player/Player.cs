@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
 
     int activeGraphic = 1;
 
+    public float hp = 100;
 
     [SerializeField]
     Tilemap elementTileMap;

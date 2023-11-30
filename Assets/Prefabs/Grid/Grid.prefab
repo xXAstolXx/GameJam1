@@ -121,8 +121,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1973581219
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -907,7 +907,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walls: {fileID: 1573352156204378708}
   ground: {fileID: 5608910676430901942}
-  environment: {fileID: 0}
+  environment: {fileID: 6832005350514780249}
+  fireTile: {fileID: 2302573175353332713, guid: 713a7d43744e2ec4ba8a2278632dca18, type: 3}
+  waterTile: {fileID: 5531871873409282409, guid: df6f7286ec546464bb42a44c653e87b8, type: 3}
+  steamTile: {fileID: 3403416318270429338, guid: 706e04892c159514e809bb92ebfcb618, type: 3}
+  iceTile: {fileID: 3297494598563130033, guid: 8ac628df7d59eec428744816e1d6ec34, type: 3}
 --- !u!1 &2741739941777770622
 GameObject:
   m_ObjectHideFlags: 0
