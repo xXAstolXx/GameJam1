@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -22,7 +23,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Color fireColor;
     [SerializeField]
-    Color hotWaterColor;
+    Color waterColor;
     #endregion
 
     [SerializeField]
@@ -41,7 +42,8 @@ public class Player : MonoBehaviour
     Tilemap elementTileMap;
     List<GameObject> elementTiles;
 
-    
+    [SerializeField]
+    Light2D light;
 
     private Rigidbody2D rb;
     private LineRenderer lineRenderer;
@@ -63,6 +65,7 @@ public class Player : MonoBehaviour
     {
         startSpeed = movementSpeed;
         rb = GetComponent<Rigidbody2D>();
+        light = GetComponent<Light2D>();
         spells = new ElementTypes[2];
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
@@ -175,6 +178,10 @@ public class Player : MonoBehaviour
             return;
         }
         float angle = Mathf.Rad2Deg * Mathf.Atan2(movement.x, movement.y);
+        if (angle < 0)
+        {
+            angle = 360 + angle;
+        }
         if (angle > 45 && angle < 135)
         {
             activeGraphic = 0;
@@ -191,7 +198,7 @@ public class Player : MonoBehaviour
         {
             activeGraphic = 3;
         }
-        //Debug.Log(angle);
+        Debug.Log(angle);
         for (int i = 0; i < 4; i++)
         {
             if (activeGraphic == i)
@@ -205,18 +212,21 @@ public class Player : MonoBehaviour
         }
         if (activeSpell == 0)
         {
-            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", spells[0] == ElementTypes.FIRE);
-            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", spells[0] == ElementTypes.ICE);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", true);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", false);
+            light.color = fireColor;
         }
         else if (activeSpell == 1)
         {
-            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", spells[1] == ElementTypes.FIRE);
-            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", spells[1] == ElementTypes.ICE);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", false);
+            graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", true);
+            light.color = iceColor;
         }
-        else
+        else if (activeSpell == 2) 
         {
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", false);
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", false);
+            light.color = waterColor;
         }
     }
         
@@ -269,7 +279,7 @@ public class Player : MonoBehaviour
     private void Attack(ElementTypes element)
     {
         ElementTypes attackType = ElementTypes.ICE;
-        Color c = hotWaterColor;
+        Color c = waterColor;
         if (activeSpell == 0)
         {
             c = fireColor;
@@ -283,7 +293,7 @@ public class Player : MonoBehaviour
         }
         else if (activeSpell == 2)
         {
-            c = hotWaterColor;
+            c = waterColor;
             attackType = ElementTypes.WATER;
         }
         lineRenderer.material.SetColor("_Color", c);
