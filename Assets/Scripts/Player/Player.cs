@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
     List<GameObject> elementTiles;
 
     [SerializeField]
-    Light2D light;
+    Light2D light2D;
 
     private Rigidbody2D rb;
     private LineRenderer lineRenderer;
@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
     {
         startSpeed = movementSpeed;
         rb = GetComponent<Rigidbody2D>();
-        light = GetComponent<Light2D>();
+        light2D = GetComponentInChildren<Light2D>();
         spells = new ElementTypes[2];
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
@@ -149,7 +149,6 @@ public class Player : MonoBehaviour
         Vector3 pos = new Vector3(transform.position.x, transform.position.y-1f,0);
         Vector3Int position = new Vector3Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y),0);
         ElementTypes element = CustomGrid.Instance.GetElement(position);
-        Debug.Log(element);
         Element settings;
         
         if (element == ElementTypes.NONE)
@@ -198,7 +197,7 @@ public class Player : MonoBehaviour
         {
             activeGraphic = 3;
         }
-        Debug.Log(angle);
+        //Debug.Log(angle);
         for (int i = 0; i < 4; i++)
         {
             if (activeGraphic == i)
@@ -214,19 +213,19 @@ public class Player : MonoBehaviour
         {
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", true);
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", false);
-            light.color = fireColor;
+            light2D.color = fireColor;
         }
         else if (activeSpell == 1)
         {
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", false);
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", true);
-            light.color = iceColor;
+            light2D.color = iceColor;
         }
         else if (activeSpell == 2) 
         {
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Fire", false);
             graphicObjects[activeGraphic].GetComponent<Animator>().SetBool("Ice", false);
-            light.color = waterColor;
+            light2D.color = waterColor;
         }
     }
         

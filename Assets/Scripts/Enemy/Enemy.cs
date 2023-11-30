@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour
         sightRange = GetComponentInChildren<SightRange>();
         healthbar = GetComponentInChildren<Healthbar>();
         healthbar.SetMaxHealth(maxHp);
+        currentHP = maxHp;
 
     }
 
@@ -63,6 +64,8 @@ public class Enemy : MonoBehaviour
         currentHP = currentHP - damage * Time.fixedDeltaTime;
         if (currentHP < 0)
         {
+            Debug.Log(currentHP);
+            Debug.Log(damage * Time.fixedDeltaTime);
             Destroy(gameObject);
         }
         healthbar.SetCurrentHealth(currentHP);
@@ -70,10 +73,9 @@ public class Enemy : MonoBehaviour
 
     private void UpdatePos()
     {
-        Vector3 pos = new Vector3(transform.position.x, transform.position.y - 1f, 0);
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y - 0.5f, 0);
         Vector3Int position = new Vector3Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), 0);
         ElementTypes element = CustomGrid.Instance.GetElement(position);
-        Debug.Log(element);
         Element settings;
 
         if (element == ElementTypes.NONE)
