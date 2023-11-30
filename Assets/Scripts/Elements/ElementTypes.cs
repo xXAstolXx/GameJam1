@@ -6,6 +6,7 @@ public enum ElementTypes
 {
     ICE = 0,
     FIRE = 1,
-    HOTWATER = 2,
-    NONE = 3
+    WATER = 2,
+    STEAM = 3,
+    NONE = 4
 }

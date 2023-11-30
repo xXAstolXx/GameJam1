@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HotWaterTile : ElementTile
+public class WaterTile : ElementTile
 {
-    public HotWaterTile() : base()
+    public WaterTile() : base()
     {
-        element = ElementTypes.HOTWATER;
+        element = ElementTypes.WATER;
     }
 }

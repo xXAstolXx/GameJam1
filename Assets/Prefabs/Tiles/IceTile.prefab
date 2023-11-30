@@ -13,16 +13,20 @@ PrefabInstance:
       value: IceTile
       objectReference: {fileID: 0}
     - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: abfaa8d092079ac428ae6c9141ca41f4, type: 3}
+    - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_Color.g
-      value: 0.6884904
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5298308572994774767, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -63,6 +67,14 @@ PrefabInstance:
     - target: {fileID: 5298308572994774767, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6697266642533111848, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.0666667
+      objectReference: {fileID: 0}
+    - target: {fileID: 6697266642533111848, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1.0666667
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
