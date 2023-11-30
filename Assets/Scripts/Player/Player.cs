@@ -35,8 +35,6 @@ public class Player : MonoBehaviour
 
     int activeGraphic = 1;
 
-    public float hp = 100;
-
     [SerializeField]
     Tilemap elementTileMap;
     List<GameObject> elementTiles;
@@ -53,6 +51,11 @@ public class Player : MonoBehaviour
     public ElementTypes[] spells;
 
     bool isAttacking = false;
+
+    [SerializeField]
+    private int maxHp;
+    private int currentHP;
+    private Healthbar healthbar;
 
     private void Awake()
     {
@@ -78,7 +81,8 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-
+        healthbar = GetComponentInChildren<Healthbar>();
+        healthbar.SetMaxHealth(maxHp);
     }
 
     void FixedUpdate()
@@ -180,7 +184,6 @@ public class Player : MonoBehaviour
         }
     }
         
-
 
     private void TryAttack()
     {
