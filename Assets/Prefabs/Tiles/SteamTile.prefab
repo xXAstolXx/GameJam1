@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4291098736719904614
+--- !u!1001 &811268704436270101
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,24 +10,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2628247901659622543, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_Name
-      value: FireTile
+      value: SteamTile
       objectReference: {fileID: 0}
     - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -2037662947, guid: 69d0a4ccfc4f89c4fa378615333a45c4, type: 3}
-    - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4366415916019859756, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 21300000, guid: 0396f19827a42714ba2368663dc1cf03, type: 3}
     - target: {fileID: 5298308572994774767, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -68,17 +56,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5298308572994774767, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6697266642533111848, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.0333333
+      value: 1.0666667
       objectReference: {fileID: 0}
     - target: {fileID: 6697266642533111848, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1
+      value: 1.0666667
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -86,23 +70,23 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2628247901659622543, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5836049405606721769}
+      addedObject: {fileID: -4202639050577516553}
   m_SourcePrefab: {fileID: 100100000, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
---- !u!1 &2302573175353332713 stripped
+--- !u!1 &3403416318270429338 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2628247901659622543, guid: ca9fca92bca5fde47b0739e57a348ffc, type: 3}
-  m_PrefabInstance: {fileID: 4291098736719904614}
+  m_PrefabInstance: {fileID: 811268704436270101}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-5836049405606721769
+--- !u!114 &-4202639050577516553
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2302573175353332713}
+  m_GameObject: {fileID: 3403416318270429338}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 921d839c80d8b72449634d20a80f6310, type: 3}
+  m_Script: {fileID: 11500000, guid: 5de4193dd7c63c44cb0e5953368fce16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  element: 1
+  element: 3

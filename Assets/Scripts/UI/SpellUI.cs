@@ -36,7 +36,7 @@ public class SpellUI : MonoBehaviour
         elementToImage = new Dictionary<ElementTypes, Sprite>();
         elementToImage.Add(ElementTypes.ICE, iceSprite);
         elementToImage.Add(ElementTypes.FIRE, fireSprite);
-        elementToImage.Add(ElementTypes.HOTWATER, hotWaterSprite);
+        elementToImage.Add(ElementTypes.WATER, hotWaterSprite);
         elementToImage.Add(ElementTypes.NONE, noSprite);
     }
 
