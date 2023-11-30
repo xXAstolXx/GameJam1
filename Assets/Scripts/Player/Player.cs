@@ -127,6 +127,21 @@ public class Player : MonoBehaviour
         UpdateGraphic();
     }
 
+    private void UpdatePos()
+    {
+        Vector3Int position = new Vector3Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y),0);
+        ElementTypes element = CustomGrid.Instance.GetElement(position);
+        if (element == ElementTypes.NONE)
+        {
+            return;
+        }
+        else
+        {
+
+        }
+    }
+
+
     private void UpdateGraphic()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
