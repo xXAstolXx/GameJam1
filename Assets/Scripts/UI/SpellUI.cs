@@ -77,7 +77,7 @@ public class SpellUI : MonoBehaviour
         if (inputs[0].isActive)
         {
             firstSpellOutline.enabled = true;
-            Debug.Log("Input 0 Active: " + inputs[0].isActive);
+          
             if (inputs[0].element == ElementTypes.NONE)
             {
                 notActiveImage1.enabled = true;
@@ -105,7 +105,6 @@ public class SpellUI : MonoBehaviour
         if (inputs[1].isActive)
         {
             secondSpellOutline.enabled = true;
-            Debug.Log("Input 1 Active: " + inputs[1].isActive);
             if (inputs[1].element == ElementTypes.NONE)
             {
                 notActiveImage2.enabled = true;

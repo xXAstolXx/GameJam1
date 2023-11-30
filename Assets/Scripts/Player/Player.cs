@@ -91,26 +91,26 @@ public class Player : MonoBehaviour
         {
             Bounce();
         }
-        if (spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE)
+        //if (spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE)
+        //{
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
 
-                activeSpell = 0;
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                activeSpell = 1;
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                activeSpell = 2;
-            }
-        }
-        else if(spells[1] == ElementTypes.NONE)
-        {
             activeSpell = 0;
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            activeSpell = 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            activeSpell = 2;
+        }
+        //}
+        //else if(spells[1] == ElementTypes.NONE)
+        //{
+        //    activeSpell = 0;
+        //}
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -183,32 +183,46 @@ public class Player : MonoBehaviour
 
     private void TryAttack()
     {
+        //if (activeSpell == 0)
+        //{
+        //    if (spells[0] != ElementTypes.NONE)
+        //    {
+        //        Attack(spells[0]);
+        //    }
+        //    spells[0] = spells[1];
+        //    spells[1] = ElementTypes.NONE;
+        //}
+        //else if (activeSpell == 1)
+        //{
+        //    if (spells[1] != ElementTypes.NONE)
+        //    {
+        //        Attack(spells[1]);
+        //        spells[1] = ElementTypes.NONE;
+        //    }
+
+        //}
+        //else if (activeSpell == 2)
+        //{
+        //    if (spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE)
+        //    {
+        //        Attack(ElementTypes.WATER);
+        //        spells[0] = ElementTypes.NONE;
+        //        spells[1] = ElementTypes.NONE;
+        //    }
+        //}
+
         if (activeSpell == 0)
         {
-            if (spells[0] != ElementTypes.NONE)
-            {
-                Attack(spells[0]);
-            }
-            spells[0] = spells[1];
-            spells[1] = ElementTypes.NONE;
+            Attack(ElementTypes.FIRE);
         }
         else if (activeSpell == 1)
         {
-            if (spells[1] != ElementTypes.NONE)
-            {
-                Attack(spells[1]);
-                spells[1] = ElementTypes.NONE;
-            }
+            Attack(ElementTypes.ICE);
 
         }
         else if (activeSpell == 2)
         {
-            if (spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE)
-            {
-                Attack(ElementTypes.WATER);
-                spells[0] = ElementTypes.NONE;
-                spells[1] = ElementTypes.NONE;
-            }
+            Attack(ElementTypes.WATER);
         }
     }
 
@@ -218,29 +232,14 @@ public class Player : MonoBehaviour
         Color c = hotWaterColor;
         if (activeSpell == 0)
         {
-            if (spells[0] == ElementTypes.ICE)
-            {
-                c = iceColor;
-                attackType = ElementTypes.ICE;
-            }
-            else
-            {
-                c = fireColor;
-                attackType = ElementTypes.FIRE;
-            }          
+            c = fireColor;
+            attackType = ElementTypes.FIRE;  
         }
         else if ( activeSpell == 1)
         {
-            if (spells[0] == ElementTypes.ICE)
-            {
-                c = iceColor;
-                attackType = ElementTypes.ICE;
-            }
-            else
-            {
-                c = fireColor;
-                attackType = ElementTypes.FIRE;
-            }
+            c = iceColor;
+            attackType = ElementTypes.ICE;
+
         }
         else if (activeSpell == 2)
         {
@@ -268,7 +267,7 @@ public class Player : MonoBehaviour
 
     IEnumerator WaitAttack(ElementTypes element, Vector3 pos)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.3f);
         lineRenderer.enabled = false;
         isAttacking = false;
         
@@ -338,11 +337,17 @@ public class Player : MonoBehaviour
     
     private void UpdateSpellUI()
     {
+        //List<SpellUIId> result = new List<SpellUIId>();
+        //result.Add(new SpellUIId(spells[0], activeSpell == 0));
+        //result.Add(new SpellUIId(spells[1], activeSpell == 1));
+        //result.Add(new SpellUIId(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[0] != spells[1] ? 
+        //           ElementTypes.WATER : ElementTypes.NONE, activeSpell == 2));
+
         List<SpellUIId> result = new List<SpellUIId>();
-        result.Add(new SpellUIId(spells[0], activeSpell == 0));
-        result.Add(new SpellUIId(spells[1], activeSpell == 1));
-        result.Add(new SpellUIId(spells[0] != ElementTypes.NONE && spells[1] != ElementTypes.NONE && spells[0] != spells[1] ? 
-                   ElementTypes.WATER : ElementTypes.NONE, activeSpell == 2));
+        result.Add(new SpellUIId(ElementTypes.FIRE, activeSpell == 0));
+        result.Add(new SpellUIId(ElementTypes.ICE, activeSpell == 1));
+        result.Add(new SpellUIId(ElementTypes.WATER, activeSpell == 2));
+
         SpellUI.Instance.UpdateState(result);
     }
 
