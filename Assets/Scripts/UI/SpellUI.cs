@@ -20,9 +20,15 @@ public class SpellUI : MonoBehaviour
     [SerializeField]
     private Image firstSpell;
     [SerializeField]
+    private Image notActiveImage1;
+    [SerializeField]
     private Image secondSpell;
     [SerializeField]
+    private Image notActiveImage2;
+    [SerializeField]
     private Image combinedSpell;
+    [SerializeField]
+    private Image notActiveImage3;
 
     private void Awake()
     {
@@ -50,45 +56,50 @@ public class SpellUI : MonoBehaviour
     public void UpdateState(List<SpellUIId> inputs)
     {
         Sprite sprite;
-
         elementToImage.TryGetValue(inputs[0].element, out sprite);
         if (inputs[0].isActive)
         {
-            var color = firstSpell.color.a;
-            color = 1f;
-        }
-        else
-        {
-            var color = firstSpell.color.a;
-            color = 0.5f;
+            if (inputs[0].element == ElementTypes.NONE)
+            {
+                notActiveImage1.enabled = true;
+            }
+            else
+            {
+                notActiveImage1.enabled = false;
+            }
         }
         firstSpell.sprite = sprite;
 
         elementToImage.TryGetValue(inputs[1].element, out sprite);
         if (inputs[1].isActive)
         {
-            var color = secondSpell.color.a;
-            color = 1f;
-        }
-        else
-        {
-            var color = secondSpell.color.a;
-            color = 0.5f;
+            if (inputs[1].element == ElementTypes.NONE)
+            {
+                notActiveImage2.enabled = true;
+            }
+            else
+            {
+                notActiveImage2.enabled = false;
+            }
         }
         secondSpell.sprite = sprite;
 
         elementToImage.TryGetValue(inputs[2].element, out sprite);
         if (inputs[2].isActive)
         {
-            var color = combinedSpell.color.a;
-            color = 1f;
-        }
-        else
-        {
-            var color = combinedSpell.color.a;
-            color = 0.5f;
+            if (inputs[2].element == ElementTypes.NONE)
+            {
+                notActiveImage3.enabled = true;
+            }
+            else
+            {
+                notActiveImage3.enabled = false;
+            }
+
         }
         combinedSpell.sprite = sprite;
     }
+
+
 
 }
