@@ -63,6 +63,10 @@ public class SpellUI : MonoBehaviour
             firstSpellOutline.enabled = true;
 
         }
+        else
+        {
+            firstSpellOutline.enabled = false;
+        }
         firstSpell.sprite = sprite;
 
         elementToImage.TryGetValue(inputs[1].element, out sprite);
@@ -71,6 +75,10 @@ public class SpellUI : MonoBehaviour
         {
             secondSpellOutline.enabled = true;
         }
+        else
+        {
+            secondSpellOutline.enabled = false;
+        }
         secondSpell.GetComponent<Image>().sprite = sprite;
 
         elementToImage.TryGetValue(inputs[2].element, out sprite);
@@ -78,6 +86,10 @@ public class SpellUI : MonoBehaviour
         {
             combinedSpellOutline.enabled = true;
 
+        }
+        else
+        {
+            combinedSpellOutline.enabled = false;
         }
         combinedSpell.sprite = sprite;
     }

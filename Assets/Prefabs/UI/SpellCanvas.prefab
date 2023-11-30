@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireSprite: {fileID: 34325546, guid: 251e4e7491a451047ad78822d6a1a6df, type: 3}
-  iceSprite: {fileID: 864152976, guid: 0955ce9cb2a2c01458bfccaf7380687a, type: 3}
+  iceSprite: {fileID: 21300000, guid: b5721fbd27be89047a1f555cd9ae46ea, type: 3}
   hotWaterSprite: {fileID: 21300000, guid: 047aa2b8ad9420e4c99f48f26781b7e4, type: 3}
   noSprite: {fileID: -474114379, guid: bcb0a876bd5618247a9abb45b7c35b78, type: 3}
   firstSpell: {fileID: 7379566630135093187}
