@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using UnityEngine.WSA;
 
 public class Player : MonoBehaviour
 {
@@ -150,7 +149,7 @@ public class Player : MonoBehaviour
         {
             activeGraphic = 3;
         }
-        Debug.Log(angle);
+        //Debug.Log(angle);
         for (int i = 0; i < 4; i++)
         {
             if (activeGraphic == i)

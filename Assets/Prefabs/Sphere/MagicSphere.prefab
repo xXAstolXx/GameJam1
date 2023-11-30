@@ -262,6 +262,7 @@ GameObject:
   - component: {fileID: 5837420002826254600}
   - component: {fileID: 8747940980944477606}
   - component: {fileID: 8751974775883828015}
+  - component: {fileID: 5949865039794438064}
   m_Layer: 7
   m_Name: MagicSphere
   m_TagString: Untagged
@@ -360,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc83a57f8f41ae4e892a5e40edb1fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  constantVelocity: 2
+  constantVelocity: 1
   element: 0
   colorIce: {r: 0, g: 0.721679, b: 1, a: 1}
   colorFire: {r: 0.7132075, g: 0, b: 0, a: 1}
@@ -457,6 +458,56 @@ MonoBehaviour:
     m_Extent: {x: 0.4987208, y: 0.49843752, z: 0}
   m_AlwaysUpdate: 1
   m_AutoRebind: 0
+--- !u!114 &5949865039794438064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352826399328613728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_LightType: 2
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeIntensityEnabled: 0
+  m_ApplyToSortingLayers: 00000000957563675d8a5d8a459ce5d0
+  m_LightCookieSprite: {fileID: 21300000, guid: 96f5e004505ddf64fab6a180049fad79, type: 3}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowIntensityEnabled: 1
+  m_ShadowIntensity: 0.75
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: -0.00009959936, y: -0.00020703673, z: 0}
+    m_Extent: {x: 0.4987207, y: 0.4984375, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
 --- !u!1 &6099412221143269306
 GameObject:
   m_ObjectHideFlags: 0
