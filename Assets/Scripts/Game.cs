@@ -6,7 +6,7 @@ public class Game : MonoBehaviour
 {
     private void Awake()
     {
-        Application.targetFrameRate = 50;
+        //Application.targetFrameRate = 50;
     }
 
 
