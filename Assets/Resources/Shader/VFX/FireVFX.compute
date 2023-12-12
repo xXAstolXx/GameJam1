@@ -1,21 +1,24 @@
 // Each #kernel tells which function to compile; you can have many kernels
-#pragma kernel CSSet
-#pragma kernel CSSpawn
-#pragma kernel CSUpdate
-#pragma kernel CSInitialize
+#pragma kernel CSUpdateBase
+#pragma kernel CSUpdateFlame
+#pragma kernel CSDraw
+#pragma kernel CSDedraw
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
 RWTexture2D<float4> renderTexture;
 
-Buffer<float4> lengthBuffer;
-Buffer<float4> thicknessSpawnBuffer;
-Buffer<float4> thicknessDespawnBuffer;
+Buffer<float4> baseSpawnProbBuffer;
+Buffer<float4> flameExpandProbBuffer;
+Buffer<float4> baseDeathProbBuffer;
+
+float flameSpawnProb;
+float4 baseExpandProb;
 
 RWBuffer<float4> test;
 
-RWBuffer<int4> valueBuffer;
-RWBuffer<int4> tempValueBuffer;
+RWBuffer<int> baseBuffer;
+RWBuffer<int> flameHeightBuffer;
 
 int resoX;
 int resoY;
@@ -41,129 +44,228 @@ float rand3dTo1d(float3 value, float3 dotDir = float3(12.9898, 78.233, 37.719))
 
 
 [numthreads(8,8,1)]
-void CSSet (int3 id : SV_DispatchThreadID)
+void CSUpdateBase (int3 id : SV_DispatchThreadID)
 {
-    int x = id.x;
-    int y = id.y;
+    float x = id.x;
+    float y = id.y;
     int index = y * resoX + x;
-    if (y >= resoY)
+    if (y >= resoX)
     {
         return;
     }
-    if (y == 0)
-    {
-        tempValueBuffer[index] = int4(0,0,0,0);
-        return;
-    }
     
-    int a = 0;
-    int b = 0;
-    int c = 0;
-    
-    if (valueBuffer[index].x == 1)
+    int halfReso = resoX / 2;
+    int lengthX;
+    int lengthY;
+    if (x < halfReso)
     {
-        float randValue = rand3dTo1d(float3(x/resoX,y/resoY,time));
-        float deathValue = lengthBuffer[y].x * thicknessDespawnBuffer[x].x;
-        if (randValue < deathValue)
-        {
-            a = 1;
-        }
-    }
-        
-    if (valueBuffer[index].y == 1)
-    {
-        float randValue = rand3dTo1d(float3(x / resoX, y / resoY, time+0.177));
-        float deathValue = lengthBuffer[y].y * thicknessDespawnBuffer[x].y;
-        if (randValue < deathValue)
-        {
-            b = 1;
-        }
-    }
-        
-    if (valueBuffer[index].z == 1)
-    {
-        float randValue = rand3dTo1d(float3(x / resoX, y / resoY, time+0.222));
-        float deathValue = lengthBuffer[y].z * thicknessDespawnBuffer[x].z;
-        if (randValue < deathValue)
-        {
-            c = 1;
-        }
-    }
-    if (id.x == 7 && id.y == 7)
-    {
-        //test[0] = int4(a, b, c, 0);
-        test[0] = float4(spawnLimit, lengthBuffer[y].z, thicknessDespawnBuffer[x].z, 0);
-    }
-    tempValueBuffer[index + resoX] = int4(a,b,c, 0);
-}
-
-[numthreads(8, 8, 1)]
-void CSSpawn(int3 id : SV_DispatchThreadID)
-{
-    if (id.y == 0)
-    {
-        int x = id.x;
-        int y = id.y;
-        int index = y * resoX + x;
-    
-        int a = 1;
-        int b = 1;
-        int c = 1;
-        
-        if (tempValueBuffer[index].x == 0)
-        {
-            float randValue = rand3dTo1d(float3(x / resoX, y / resoY, time+0.134));
-            float spawnValue = thicknessSpawnBuffer[x].x;
-            if (randValue > spawnValue)
-            {
-                a = 0;
-            }
-        }
-        if (tempValueBuffer[index].y == 0)
-        {
-            float randValue = rand3dTo1d(float3(x / resoX, y / resoY, time+0.987));
-            float spawnValue = thicknessSpawnBuffer[x].y;
-            if (randValue > spawnValue)
-            {
-                b = 0;
-            }
-        }
-        if (tempValueBuffer[index].z == 0)
-        {
-            float randValue = rand3dTo1d(float3(x / resoX, y / resoY, time+0.333));
-            float spawnValue = thicknessSpawnBuffer[x].z;
-            if (randValue > spawnValue)
-            {
-                c = 0;
-            }
-        }
-
-        tempValueBuffer[index + resoX] = int4(a, b, c, 0);
-    }
-}
-
-[numthreads(8, 8, 1)]
-void CSUpdate(int3 id : SV_DispatchThreadID)
-{
-    int index = id.y * resoX + id.x;
-    valueBuffer[index] = tempValueBuffer[index];
-    
-    if (valueBuffer[index].x == 1)
-    {
-        renderTexture[id.xy] = innerColor;
-    }
-    else if (valueBuffer[index].y == 1)
-    {
-        renderTexture[id.xy] = middleColor;
-    }
-    else if (valueBuffer[index].z == 1)
-    {
-        renderTexture[id.xy] = outerColor;
+        lengthX = halfReso - 1 - x;
     }
     else
     {
-        renderTexture[id.xy] = float4(0, 0, 0, 0);
+        lengthX = halfReso - x;
     }
+    if (y < halfReso)
+    {
+        lengthY = halfReso - 1 - y;
+    }
+    else
+    {
+        lengthY = halfReso - y;
+    }
+    //float lengthRelX = (float)lengthX / (halfReso - 1);
+    //float lengthRelY = (float) lengthY / (halfReso - 1);
+    //int length = (int) sqrt(lengthRelX*lengthRelX + lengthRelY*lengthRelY);
+    
+    int length = clamp(round(sqrt((float) lengthX * lengthX + (float) lengthY * lengthY)),0,halfReso);
+
+    float randValue = rand3dTo1d(float3(x / resoX, y / resoX, time + 0.199));
+    
+    
+    float4 baseDeathProbX = baseDeathProbBuffer[x];
+    float4 baseDeathProbY = baseDeathProbBuffer[y];
+    if (baseBuffer[index] == 1)
+    {
+        if (randValue > baseDeathProbX.x * baseDeathProbY.x)
+        {
+            baseBuffer[index] = 0;
+            flameHeightBuffer[index] = 0;
+        }
+    }
+    else if (baseBuffer[index] == 2)
+    {
+        if (randValue > baseDeathProbX.y * baseDeathProbY.y)
+        {
+            baseBuffer[index] = 0;
+            flameHeightBuffer[index] = 0;
+        }
+    }
+    else if (baseBuffer[index] == 3)
+    {
+        if (randValue > baseDeathProbX.z * baseDeathProbY.z)
+        {
+            baseBuffer[index] = 0;
+            flameHeightBuffer[index] = 0;
+        }
+    }
+    
+    if (baseBuffer[index] != 0)
+    {
+        return;
+    }
+    
+    
+    randValue = rand3dTo1d(float3(x / resoX, y / resoX, time + 0.177));
+        
+    float4 baseSpawnProbX = baseSpawnProbBuffer[x];
+    float4 baseSpawnProbY = baseSpawnProbBuffer[y];
+    
+    if (randValue <= (baseSpawnProbX.x + baseSpawnProbY.x)/2)
+    {
+        baseBuffer[index] = 1;
+    }
+    else if (randValue <= (baseSpawnProbX.y + baseSpawnProbY.y)/2)
+    {
+        baseBuffer[index] = 2;
+    }
+    else if (randValue <= (baseSpawnProbX.z + baseSpawnProbY.z) / 2)
+    {
+        baseBuffer[index] = 3;
+    }
+}
+
+[numthreads(8, 8, 1)]
+void CSUpdateFlame(int3 id : SV_DispatchThreadID)
+{
+    float x = id.x;
+    float y = id.y;
+    int index = y * resoX + x;
+    
+    if (y >= resoX)
+    {
+        return;
+    }
+    
+    int flameHeight = flameHeightBuffer[ index];
+    if (flameHeight == 0)
+    {
+        float randValue = rand3dTo1d(float3(x / resoX, y / resoX, time + 0.087));
+        if (randValue <= flameSpawnProb)
+        {
+            flameHeightBuffer[index] = 1;
+        }
+    }
+    if (flameHeight != 0)
+    {
+        float4 flameExpandProb = flameExpandProbBuffer[flameHeight];
+        float randValue = rand3dTo1d(float3(x / resoX, y / resoX, time + 0.044));
+        if (baseBuffer[index] == 1)
+        {
+            if (randValue <= flameExpandProb.x)
+            {
+                flameHeightBuffer[index] = flameHeightBuffer[index] + 1;
+            }
+            else
+            {
+                flameHeightBuffer[index] = 0;
+
+            }
+        }
+        else if (baseBuffer[index] == 2)
+        {
+            if (randValue <= flameExpandProb.y)
+            {
+                flameHeightBuffer[index] = flameHeightBuffer[index] + 1;
+            }
+            else
+            {
+                flameHeightBuffer[index] = 0;
+            }
+        }
+        else if (baseBuffer[index] == 3)
+        {
+            if (randValue <= flameExpandProb.z)
+            {
+                flameHeightBuffer[index] = flameHeightBuffer[index] + 1;
+            }
+            else
+            {
+                flameHeightBuffer[index] = 0;
+
+            }
+        }
+        if (flameHeightBuffer[index] > resoX)
+        {
+            flameHeightBuffer[index] = resoX;
+        }
+    }
+}
+
+[numthreads(8, 8, 1)]
+void CSDedraw(int3 id : SV_DispatchThreadID)
+{
+    renderTexture[id.xy] = float4(0,0,0,0);
+
+}
+
+
+[numthreads(8, 8, 1)]
+void CSDraw(int3 id : SV_DispatchThreadID)
+{
+    float x = id.x;
+    float y = id.y;
+    int index = y * resoX + x;
+    
+    if (y != 0)
+    {
+        for (int i = clamp(y - resoX + 1, 0, y); i < y; i++)
+        {
+            int checkIndex = i * resoX + x;
+            if (flameHeightBuffer[checkIndex] + i >= y)
+            {
+                float4 color;
+                if (baseBuffer[checkIndex] == 0)
+                {
+                    continue;
+                }
+                else if (baseBuffer[checkIndex] == 1)
+                {
+                    color = innerColor;
+                }
+                else if (baseBuffer[checkIndex] == 2)
+                {
+                    color = middleColor;
+                }
+                else if (baseBuffer[checkIndex] == 3)
+                {
+                    color = outerColor;
+                }
+            
+                renderTexture[int2(x, y)] = color;
+                return;
+            }
+        }
+    }
+    
+    float4 color;
+    if (baseBuffer[index] == 0)
+    {
+        return;
+    }
+    else if (baseBuffer[index] == 1)
+    {
+        color = innerColor;
+    }
+    else if (baseBuffer[index] == 2)
+    {
+        color = middleColor;
+    }
+    else if (baseBuffer[index] == 3)
+    {
+        color = outerColor;
+    }
+            
+    renderTexture[int2(x, y)] = color;
 }
 
 [numthreads(8, 8, 1)]

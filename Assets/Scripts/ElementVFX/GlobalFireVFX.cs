@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.Mathematics;
 using UnityEngine;
+using Color = UnityEngine.Color;
 
 public class GlobalFireVFX : MonoBehaviour
 {
@@ -22,65 +24,65 @@ public class GlobalFireVFX : MonoBehaviour
     Color outerColor;
 
     [SerializeField]
-    AnimationCurve innerLengthProb;
+    AnimationCurve innerBaseSpawnProb;
     [SerializeField]
-    AnimationCurve innerThicknessSpawn;
+    AnimationCurve innerFlameExpandProb;
     [SerializeField]
-    AnimationCurve innerThicknessDespawn;
-    [SerializeField]
-    AnimationCurve middleLengthProb;
-    [SerializeField]
-    AnimationCurve middleThicknessSpawn;
-    [SerializeField]
-    AnimationCurve middleThicknessDespawn;
-    [SerializeField]
-    AnimationCurve outerLengthProb;
-    [SerializeField]
-    AnimationCurve outerThicknessSpawn;
-    [SerializeField]
-    AnimationCurve outerThicknessDespawn;
+    AnimationCurve innerBaseDeathProb;
 
     [SerializeField]
-    int innerRange;
+    AnimationCurve middleBaseSpawnProb;
     [SerializeField]
-    int middleRange;
+    AnimationCurve middleFlameExpandProb;
     [SerializeField]
-    int outerRange;
+    AnimationCurve middleBaseDeathProb;
 
     [SerializeField]
-    int spawnLimit;
+    AnimationCurve outerBaseSpawnProb;
+    [SerializeField]
+    AnimationCurve outerFlameExpandProb;
+    [SerializeField]
+    AnimationCurve outerBaseDeathProb;
+
+    [SerializeField]
+    float expandProb;
+    [SerializeField]
+    float flameSpawnProb;
+    [SerializeField]
+    float adjustBaseSpawn;
 
 
-    float[] innerLength;
-    float[] innerThicknessSpawnData;
-    float[] innerThicknessDespawnData;
-    Float4S[] lengthData;
+    float[] innerBaseSpawnProbArray;
+    float[] innerFlameExpandProbArray;
+    float[] innerBaseDeathProbArray;
 
-    float[] middleLength;
-    float[] middleThicknessSpawnData;
-    float[] middleThicknessDespawnData;
-    Float4S[] thicknessSpawnData;
+    float[] middleBaseSpawnProbArray;
+    float[] middleFlameExpandProbArray;
+    float[] middleBaseDeathProbArray;
 
-    float[] outerLength;
-    float[] outerThicknessSpawnData;
-    float[] outerThicknessDespawnData;
-    Float4S[] thicknessDespawnData;
+    float[] outerBaseSpawnProbArray;
+    float[] outerFlameExpandProbArray;
+    float[] outerBaseDeathProbArray;
 
-    int SetKernel;
-    int SpawnKernel;
-    int UpdateKernel;
-    int InitializeKernel;
+    Float4S[] baseSpawnProbData;
+    Float4S[] flameExpandProbData;
+    Float4S[] baseDeathProbData;
+
+    int UpdateBaseKernel;
+    int UpdateFlameKernel;
+    int DrawKernel;
+    int DedrawKernel;
 
     int threadGroupsX;
     int threadGroupsY;
 
     ComputeShader computeShader;
 
-    ComputeBuffer lengthBuffer;
-    ComputeBuffer thicknessSpawnBuffer;
-    ComputeBuffer thicknessDespawnBuffer;
-    ComputeBuffer valueBuffer;
-    ComputeBuffer tempValueBuffer;
+    ComputeBuffer baseSpawnProbBuffer;
+    ComputeBuffer flameExpandProbBuffer;
+    ComputeBuffer baseDeathProbBuffer;
+    ComputeBuffer baseBuffer;
+    ComputeBuffer flameHeightBuffer;
 
     public RenderTexture renderTexture { get; private set; }
     MaterialPropertyBlock materialPropertyBlock;
@@ -131,65 +133,67 @@ public class GlobalFireVFX : MonoBehaviour
         //GetComponent<SpriteRenderer>().SetPropertyBlock(materialPropertyBlock);
         //GetComponent<SpriteRenderer>().sharedMaterial.SetTexture("_FireTex", renderTexture);
 
-        innerLength = CurveToLengthArray(innerLengthProb, resoY);
-        middleLength = CurveToLengthArray(middleLengthProb, resoY);
-        outerLength = CurveToLengthArray(outerLengthProb, resoY);
-        InitializeLengthData();
-        innerThicknessSpawnData = CurveToThicknessArray(innerThicknessSpawn, resoX, innerRange);
+        innerBaseSpawnProbArray = CurveToWidthArray(innerBaseSpawnProb, resoX);
+        middleBaseSpawnProbArray = CurveToWidthArray(middleBaseSpawnProb, resoX);
+        outerBaseSpawnProbArray = CurveToWidthArray(outerBaseSpawnProb, resoX);
+        InitializeBaseSpawnData();
 
-        middleThicknessSpawnData = CurveToThicknessArray(middleThicknessSpawn, resoX, middleRange);
-        outerThicknessSpawnData = CurveToThicknessArray(outerThicknessSpawn, resoX, outerRange);
-        InitializeThicknessSpawnData();
+        innerFlameExpandProbArray = CurveToHeightArray(innerFlameExpandProb, resoX);
+        middleFlameExpandProbArray = CurveToHeightArray(middleFlameExpandProb, resoX);
+        outerFlameExpandProbArray = CurveToHeightArray(outerFlameExpandProb, resoX);
+        InitializeFlameExpandData();
 
-        innerThicknessDespawnData = CurveToThicknessArray(innerThicknessDespawn, resoX, innerRange);
-        middleThicknessDespawnData = CurveToThicknessArray(middleThicknessDespawn, resoX, middleRange);
-        outerThicknessDespawnData = CurveToThicknessArray(outerThicknessDespawn, resoX, outerRange);
-        InitializeThicknessDespawnData();
+        innerBaseDeathProbArray = CurveToWidthArray(innerBaseDeathProb, resoX);
+        middleBaseDeathProbArray = CurveToWidthArray(middleBaseDeathProb, resoX);
+        outerBaseDeathProbArray = CurveToWidthArray(outerBaseDeathProb, resoX);
+        InitializeBaseDeathData();
 
-        int size = resoY * resoX;
-        int4[] valueData = new int4[size];
-        int4[] tempValueData = new int4[size];
+        int size = resoX * resoX;
+        int[] baseData = new int[size];
+        int[] flameHeightData = new int[size];
         for (int i = 0; i < size; i++)
         {
-            valueData[i] = 0;
-            tempValueData[i] = 0;
+            baseData[i] = 0;
+            flameHeightData[i] = 0;
         }
 
         computeShader = Resources.Load<ComputeShader>("Shader/VFX/FireVFX");
 
-        SetKernel = computeShader.FindKernel("CSSet");
-        SpawnKernel = computeShader.FindKernel("CSSpawn");
-        UpdateKernel = computeShader.FindKernel("CSUpdate");
-        InitializeKernel = computeShader.FindKernel("CSInitialize");
+        UpdateBaseKernel = computeShader.FindKernel("CSUpdateBase");
+        UpdateFlameKernel = computeShader.FindKernel("CSUpdateFlame");
+        DrawKernel = computeShader.FindKernel("CSDraw");
+        DedrawKernel = computeShader.FindKernel("CSDedraw");
 
-        valueBuffer = new ComputeBuffer(resoX * resoY, sizeof(int) * 4);
-        tempValueBuffer = new ComputeBuffer(resoX * resoY, sizeof(int) * 4);
-        lengthBuffer = new ComputeBuffer(resoY, sizeof(float) * 4);
-        thicknessSpawnBuffer = new ComputeBuffer(resoX, sizeof(float) * 4);
-        thicknessDespawnBuffer = new ComputeBuffer(resoX, sizeof(float) * 4);
+        baseBuffer = new ComputeBuffer(resoX * resoX, sizeof(int));
+        flameHeightBuffer = new ComputeBuffer(resoX * resoX, sizeof(int));
+        baseSpawnProbBuffer = new ComputeBuffer(resoY, sizeof(float) * 4);
+        baseDeathProbBuffer = new ComputeBuffer(resoX, sizeof(float) * 4);
+        flameExpandProbBuffer = new ComputeBuffer(resoX, sizeof(float) * 4);
 
-        valueBuffer.SetData(valueData);
-        tempValueBuffer.SetData(tempValueData);
+        baseBuffer.SetData(baseData);
+        flameHeightBuffer.SetData(flameHeightData);
 
-        lengthBuffer.SetData(lengthData);
-        thicknessSpawnBuffer.SetData(thicknessSpawnData);
-        thicknessDespawnBuffer.SetData(thicknessDespawnData);
+        baseSpawnProbBuffer.SetData(baseSpawnProbData);
+        baseDeathProbBuffer.SetData(baseDeathProbData);
+        flameExpandProbBuffer.SetData(flameExpandProbData);
 
-        computeShader.SetBuffer(SetKernel, "valueBuffer", valueBuffer);
-        computeShader.SetBuffer(SetKernel, "tempValueBuffer", tempValueBuffer);
-        computeShader.SetBuffer(SetKernel, "lengthBuffer", lengthBuffer);
-        computeShader.SetBuffer(SetKernel, "thicknessDespawnBuffer", thicknessDespawnBuffer);
+        computeShader.SetBuffer(UpdateBaseKernel, "baseBuffer", baseBuffer);
+        computeShader.SetBuffer(UpdateBaseKernel, "flameHeightBuffer", flameHeightBuffer);
+        computeShader.SetBuffer(UpdateBaseKernel, "baseSpawnProbBuffer", baseSpawnProbBuffer);
+        computeShader.SetBuffer(UpdateBaseKernel, "baseDeathProbBuffer", baseDeathProbBuffer);
 
-        computeShader.SetBuffer(SpawnKernel, "tempValueBuffer", tempValueBuffer);
-        computeShader.SetBuffer(SpawnKernel, "thicknessSpawnBuffer", thicknessSpawnBuffer);
+        computeShader.SetBuffer(UpdateFlameKernel, "baseBuffer", baseBuffer);
+        computeShader.SetBuffer(UpdateFlameKernel, "flameHeightBuffer", flameHeightBuffer);
+        computeShader.SetBuffer(UpdateFlameKernel, "flameExpandProbBuffer", flameExpandProbBuffer);
 
-        computeShader.SetBuffer(UpdateKernel, "tempValueBuffer", tempValueBuffer);
-        computeShader.SetBuffer(UpdateKernel, "valueBuffer", valueBuffer);
-        computeShader.SetTexture(UpdateKernel, "renderTexture", renderTexture);
+        computeShader.SetTexture(DedrawKernel, "renderTexture", renderTexture);
 
-        computeShader.SetTexture(InitializeKernel, "renderTexture", renderTexture);
+        computeShader.SetTexture(DrawKernel, "renderTexture", renderTexture);
+        computeShader.SetBuffer(DrawKernel, "baseBuffer", baseBuffer);
+        computeShader.SetBuffer(DrawKernel, "flameHeightBuffer", flameHeightBuffer);
 
         computeShader.SetFloat("time", Time.time);
+        computeShader.SetFloat("flameSpawnProb", flameSpawnProb);
 
         computeShader.SetVector("innerColor", innerColor);
         computeShader.SetVector("middleColor", middleColor);
@@ -197,15 +201,14 @@ public class GlobalFireVFX : MonoBehaviour
 
         computeShader.SetInt("resoX", resoX);
         computeShader.SetInt("resoY", resoY);
-        computeShader.SetInt("spawnLimit", spawnLimit);
 
-        test = new ComputeBuffer(1, sizeof(float) * 4);
-        t = new Float4S[1];
-        t[0] = new Float4S(0, 0, 0);
-        test.SetData(t);
-        computeShader.SetBuffer(SetKernel, "test", test);
+        //test = new ComputeBuffer(1, sizeof(float) * 4);
+        //t = new Float4S[1];
+        //t[0] = new Float4S(0, 0, 0);
+        //test.SetData(t);
+        //computeShader.SetBuffer(SetKernel, "test", test);
 
-        computeShader.Dispatch(InitializeKernel, threadGroupsX, threadGroupsY, 1);
+        //computeShader.Dispatch(InitializeKernel, threadGroupsX, threadGroupsY, 1);
     }
 
     private void UpdateShader()
@@ -214,17 +217,18 @@ public class GlobalFireVFX : MonoBehaviour
         {
             executeFrame = true;
             computeShader.SetFloat("time", Time.time);
-            computeShader.Dispatch(SetKernel, threadGroupsX, threadGroupsY, 1);
-            computeShader.Dispatch(SpawnKernel, threadGroupsX, threadGroupsY, 1);
-            computeShader.Dispatch(UpdateKernel, threadGroupsX, threadGroupsY, 1);
-        }
-        else
-        {
-            executeFrame = true;
+            computeShader.Dispatch(DedrawKernel, threadGroupsX, threadGroupsY, 1);
+            computeShader.Dispatch(UpdateBaseKernel, threadGroupsX, threadGroupsY/2, 1);
+            computeShader.Dispatch(UpdateFlameKernel, threadGroupsX, threadGroupsY/2, 1);
+            int[] flameHeightData = new int[resoX*resoX];
+            flameHeightBuffer.GetData(flameHeightData);
+            Debug.Log("y 0: "+flameHeightData[8] + ", y 1: "+ flameHeightData[24] + ", y 2: " + flameHeightData[40]);
+            computeShader.Dispatch(DrawKernel, threadGroupsX, threadGroupsY, 1);
+
         }
     }
 
-    private float[] CurveToLengthArray(AnimationCurve curve, int arrayLength)
+    private float[] CurveToHeightArray(AnimationCurve curve, int arrayLength)
     {
         float[] result = new float[arrayLength];
 
@@ -237,65 +241,63 @@ public class GlobalFireVFX : MonoBehaviour
         return result;
     }
 
-    private float[] CurveToThicknessArray(AnimationCurve curve, int arrayLength, int range)
+    private float[] CurveToWidthArray(AnimationCurve curve, int arrayLength)
     {
         float[] result = new float[arrayLength];
 
-        int start = arrayLength / 2 - range;
-        int end = arrayLength / 2 + range;
-        float stepSize = 1f / (2f * range - 1f);
+        int half = arrayLength / 2;
+        float stepSize = 1f / (half-1);
 
-        for (int j = 0; j < start; j++)
+        for (int i = 0; i < half; i++)
         {
-            result[j] = 0;
-        }
-        for (int i = start; i < end; i++)
-        {
-            result[i] = Mathf.Clamp01(curve.Evaluate((i - start) * stepSize));
-        }
-        for (int k = end; k < arrayLength; k++)
-        {
-            result[k] = 0;
+            Debug.Log("--YYYY " + (i * stepSize));
+            float value = Mathf.Clamp01(curve.Evaluate((i) * stepSize));
+            result[half-1-i] = value;
+            result[half + i] = value;
         }
         return result;
     }
 
-    private void InitializeLengthData()
+    private void InitializeBaseSpawnData()
     {
-        lengthData = new Float4S[resoY];
+        baseSpawnProbData = new Float4S[resoX];
 
-        for (int i = 0; i < lengthData.Length; i++)
+        for (int i = 0; i < resoX; i++)
         {
-            lengthData[i] = new Float4S(innerLength[i], middleLength[i], outerLength[i]);
+            float tempAddA = innerBaseSpawnProbArray[i] * adjustBaseSpawn;
+            float tempAddB = tempAddA + middleBaseSpawnProbArray[i] * adjustBaseSpawn;
+            float tempAddC = tempAddB + outerBaseSpawnProbArray[i]*adjustBaseSpawn;
+            baseSpawnProbData[i] = new Float4S(tempAddA, tempAddB, tempAddC);
         }
     }
 
-    private void InitializeThicknessSpawnData()
+    private void InitializeBaseDeathData()
     {
-        thicknessSpawnData = new Float4S[resoX];
-        for (int i = 0; i < thicknessSpawnData.Length; i++)
+        baseDeathProbData = new Float4S[resoX];
+
+        for (int i = 0; i < resoX; i++)
         {
-            thicknessSpawnData[i] = new Float4S(innerThicknessSpawnData[i], middleThicknessSpawnData[i], outerThicknessSpawnData[i]);
+            baseDeathProbData[i] = new Float4S(1-(1-innerBaseDeathProbArray[i])*0.1f, 1 - (1 - middleBaseDeathProbArray[i])*0.1f, 1 - (1 - outerBaseDeathProbArray[i]) * 0.1f);
         }
     }
 
-    private void InitializeThicknessDespawnData()
+    private void InitializeFlameExpandData()
     {
-        thicknessDespawnData = new Float4S[resoX];
-        for (int i = 0; i < thicknessDespawnData.Length; i++)
+        flameExpandProbData = new Float4S[resoX];
+        for (int i = 0; i < resoX; i++)
         {
-            thicknessDespawnData[i] = new Float4S(innerThicknessDespawnData[i], middleThicknessDespawnData[i], outerThicknessDespawnData[i]);
+            flameExpandProbData[i] = new Float4S(innerFlameExpandProbArray[i], middleFlameExpandProbArray[i], outerFlameExpandProbArray[i]);
         }
     }
 
     private void OnDestroy()
     {
-        valueBuffer.Release();
-        tempValueBuffer.Release();
-        lengthBuffer.Release();
-        thicknessDespawnBuffer.Release();
-        thicknessSpawnBuffer.Release();
-        test.Release();
+        baseBuffer.Release();
+        flameHeightBuffer.Release();
+        baseSpawnProbBuffer.Release();
+        baseDeathProbBuffer.Release();
+        flameExpandProbBuffer.Release();
+        //test.Release();
         renderTexture.Release();
     }
 }
